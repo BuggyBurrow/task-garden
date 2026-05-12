@@ -1,4 +1,7 @@
 from enum import Enum
+from dataclasses import dataclass, field
+from datetime import datetime
+import uuid
 
 class TaskStatus(Enum):
     INCOMPLETE = "incomplete"
@@ -7,3 +10,20 @@ class TaskStatus(Enum):
     EXPIRED = "expired"     # past the specified deadline
     DELETED = "deleted"
 
+@dataclass
+class Task:
+    # Required
+    title: str
+
+    # Defaults
+    task_id: uuid.UUID = field(default_factory=uuid.uuid4)
+    status: TaskStatus = TaskStatus.INCOMPLETE
+    species: str = "not yet defined"
+    memo: str = ""
+    tags: list[str] = field(default_factory=list)
+    
+    # Time Management
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
+    completed_at: datetime | None = None
+    deadline: datetime | None = None
