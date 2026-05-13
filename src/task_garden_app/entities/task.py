@@ -28,3 +28,23 @@ class Task:
     updated_at: datetime = field(default_factory=datetime.now)
     completed_at: datetime | None = None
     deadline: datetime | None = None
+
+    def update_status(self):
+        if self.status == TaskStatus.COMPLETE or self.status == TaskStatus.DELETED:
+            return
+        
+        now = datetime.now()
+
+        if self.deadline and self.deadline < now:
+            self.status = TaskStatus.EXPIRED
+        elif (now - self.updated_at).total_seconds() > 259200:
+            self.status = TaskStatus.WILTING
+
+    def mark_complete(self):
+        if self.status == TaskStatus.DELETED:
+            return
+        self.status = TaskStatus.COMPLETE
+
+        now = datetime.now()
+        self.completed_at = now
+        self.updated_at = now
