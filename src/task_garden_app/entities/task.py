@@ -1,6 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass, field
 from datetime import datetime
+import random
 import uuid
 
 class TaskStatus(Enum):
@@ -18,7 +19,7 @@ class Task:
     # Defaults
     task_id: uuid.UUID = field(default_factory=uuid.uuid4)
     status: TaskStatus = TaskStatus.INCOMPLETE
-    species: str = "not yet defined"
+    variant: int = field(default_factory=lambda: random.randint(1,4))
     memo: str = ""
     tags: list[str] = field(default_factory=list)
     
