@@ -4,11 +4,13 @@ from datetime import datetime
 import random
 import uuid
 
+from task_garden_app.config import WILT_THRESHOLD_SECONDS
+
 class TaskStatus(Enum):
     INCOMPLETE = "incomplete"
     COMPLETE = "complete"
-    WILTING = "wilting"     # task has not been updated in 72 hours (default time)
-    EXPIRED = "expired"     # past the specified deadline
+    WILTING = "wilting"     # task has not been updated recently
+    EXPIRED = "expired"     # task has not been completed by the specified deadline
     DELETED = "deleted"
 
 @dataclass
@@ -37,7 +39,7 @@ class Task:
 
         if self.deadline and self.deadline < now:
             self.status = TaskStatus.EXPIRED
-        elif (now - self.updated_at).total_seconds() > 259200:
+        elif (now - self.updated_at).total_seconds() > WILT_THRESHOLD_SECONDS:
             self.status = TaskStatus.WILTING
 
     def mark_complete(self):
